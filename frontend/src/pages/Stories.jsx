@@ -6,6 +6,13 @@ const Stories = () => {
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [page, setPage] = useState(1);
+
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+  });
+
   // bookmarked story ids
   const [bookmarkedStories, setBookmarkedStories] = useState([]);
 
@@ -15,21 +22,22 @@ const Stories = () => {
   console.log("token", user?.token);
 
   useEffect(() => {
-    if (!user?.token) return;
+    fetchStories(page);
+  }, [page, user?.token]);
 
-    fetchStories();
-  }, [user?.token]);
-
-  const fetchStories = async () => {
+  const fetchStories = async (currentPage = 1) => {
     try {
-      const { data } = await api.get("/stories", {
+      const { data } = await api.get(`/stories?page=${currentPage}&limit=10`, {
         headers: {
           Authorization: user?.token ? `Bearer ${user.token}` : "",
         },
       });
 
       setStories(data.stories || []);
+
       setBookmarkedStories(data.bookmarks || []);
+
+      setPagination(data.pagination);
     } catch (error) {
       console.log(error);
     } finally {
@@ -142,6 +150,30 @@ const Stories = () => {
             );
           })}
         </div>
+      </div>
+      <div className="flex items-center justify-center gap-4 mt-10">
+        {/* Previous */}
+        <button
+          disabled={page === 1}
+          onClick={() => setPage((prev) => prev - 1)}
+          className="px-5 py-2 rounded-xl bg-black text-white disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Previous
+        </button>
+
+        {/* Page Info */}
+        <div className="font-medium text-gray-700">
+          Page {pagination.currentPage} of {pagination.totalPages}
+        </div>
+
+        {/* Next */}
+        <button
+          disabled={page === pagination.totalPages}
+          onClick={() => setPage((prev) => prev + 1)}
+          className="px-5 py-2 rounded-xl bg-black text-white disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Next
+        </button>
       </div>
     </main>
   );
