@@ -1,12 +1,37 @@
-import React from "react";
+// App.jsx
+import { Routes, Route } from "react-router-dom";
+
+import { useContext } from "react";
+import { AuthContext } from "./context/AuthContext";
+import Stories from "./pages/Stories";
 import Login from "./pages/Login";
-import { Route, Routes } from "react-router-dom";
+import Bookmarks from "./pages/Bookmarks";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Navbar from "./components/Navbar";
+import Register from "./pages/Register";
 
 function App() {
+  const { user } = useContext(AuthContext);
+
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-    </Routes>
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Stories />} />
+
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        <Route
+          path="/bookmarks"
+          element={
+            <ProtectedRoute user={user}>
+              <Bookmarks />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </>
   );
 }
 

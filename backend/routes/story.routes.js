@@ -4,11 +4,11 @@ import {
   getStoryById,
   toggleBookmark,
 } from "../controllers/story.controller.js";
-import { protect } from "../middleware/auth.middleware.js";
+import { optionalAuth, protect } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/", getStories);
+router.get("/", optionalAuth, getStories);
 router.get("/:id", getStoryById);
 router.post("/:id/bookmark", protect, toggleBookmark);
 

@@ -3,7 +3,20 @@ import Story from "../models/story.model.js";
 // GET all stories
 export const getStories = async (req, res) => {
   const stories = await Story.find().sort({ points: -1 });
-  res.json(stories);
+
+  let bookmarks = [];
+
+  // console.log("rrrrr", req.user);
+
+  //if logged in user exists
+  if (req.user) {
+    bookmarks = req.user.bookmarks.map((id) => id.toString());
+  }
+
+  res.json({
+    stories,
+    bookmarks,
+  });
 };
 
 // GET single story

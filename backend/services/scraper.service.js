@@ -39,8 +39,16 @@ export const scrapeHackerNews = async () => {
   });
 
   // Clear old + insert fresh
-  await Story.deleteMany({});
-  await Story.insertMany(stories);
+  // await Story.deleteMany({});
+  await Story.bulkWrite(
+    stories.map((story) => ({
+      updateOne: {
+        filter: { url: story.url },
+        update: { $set: story },
+        upsert: true,
+      },
+    })),
+  );
 
   return stories;
 };
