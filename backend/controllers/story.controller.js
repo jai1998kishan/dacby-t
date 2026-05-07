@@ -1,22 +1,50 @@
 import Story from "../models/story.model.js";
 
 // GET all stories
+// GET all stories with pagination
+
 export const getStories = async (req, res) => {
-  const stories = await Story.find().sort({ points: -1 });
+  try {
+    // query params
+    const page = Number(req.query.page) || 1;
 
-  let bookmarks = [];
+    const limit = Math.min(Number(req.query.limit) || 10, 50);
 
-  // console.log("rrrrr", req.user);
+    // calculate skip
+    const skip = (page - 1) * limit;
 
-  //if logged in user exists
-  if (req.user) {
-    bookmarks = req.user.bookmarks.map((id) => id.toString());
+    // total count
+    const totalStories = await Story.countDocuments();
+
+    // paginated stories
+    const stories = await Story.find()
+      .sort({ points: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    let bookmarks = [];
+
+    // logged in user bookmarks
+    if (req.user) {
+      bookmarks = req.user.bookmarks.map((id) => id.toString());
+    }
+
+    res.json({
+      stories,
+      bookmarks,
+
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(totalStories / limit),
+        totalStories,
+        limit,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
   }
-
-  res.json({
-    stories,
-    bookmarks,
-  });
 };
 
 // GET single story
