@@ -20,7 +20,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "hhttps://dacby-t.vercel.app/", // frontend URL
+    origin: "hhttps://dacby-t.vercel.app", // frontend URL
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
