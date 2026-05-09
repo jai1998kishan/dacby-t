@@ -28,12 +28,6 @@ const Navbar = () => {
             Stories
           </Link>
 
-          {user && (
-            <Link to="/bookmarks" className="hover:text-yellow-400 transition">
-              Bookmarks
-            </Link>
-          )}
-
           {!user ? (
             <>
               <Link to="/login" className="hover:text-yellow-400 transition">
