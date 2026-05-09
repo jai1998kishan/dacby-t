@@ -28,6 +28,14 @@ app.use(
 
 app.use(helmet());
 
+// Health Check Route
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Backend is live",
+  });
+});
+
 //Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/scrape", scraperRoutes);
