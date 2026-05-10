@@ -21,29 +21,53 @@ const Stories = () => {
   console.log("user", user);
   console.log("token", user?.token);
 
+  // const fetchStories = async (currentPage = 1) => {
+  //   try {
+  //     const { data } = await api.get(`/stories?page=${currentPage}&limit=10`, {
+  //       headers: {
+  //         Authorization: user?.token ? `Bearer ${user.token}` : "",
+  //       },
+  //     });
+
+  //     setStories(data.stories || []);
+
+  //     setBookmarkedStories(data.bookmarks || []);
+
+  //     setPagination(data.pagination);
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchStories(page);
+  // }, [page, user?.token]);
+
   useEffect(() => {
-    fetchStories(page);
-  }, [page, user?.token]);
+    const loadStories = async () => {
+      try {
+        setLoading(true);
 
-  const fetchStories = async (currentPage = 1) => {
-    try {
-      const { data } = await api.get(`/stories?page=${currentPage}&limit=10`, {
-        headers: {
-          Authorization: user?.token ? `Bearer ${user.token}` : "",
-        },
-      });
+        const { data } = await api.get(`/stories?page=${page}&limit=10`, {
+          headers: {
+            Authorization: user?.token ? `Bearer ${user.token}` : "",
+          },
+        });
 
-      setStories(data.stories || []);
+        setStories(data.stories || []);
+        setBookmarkedStories(data.bookmarks || []);
+        setPagination(data.pagination);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      setBookmarkedStories(data.bookmarks || []);
-
-      setPagination(data.pagination);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    loadStories();
+  }, [page, user]);
 
   const toggleBookmark = async (id) => {
     if (!user) return;

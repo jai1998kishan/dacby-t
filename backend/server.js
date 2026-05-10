@@ -50,7 +50,7 @@ mongoose
     //Run scraper on start
 
     try {
-      await scrapeHackerNews();
+      await scrapeHackerNews(); // fetching the news stories from the hackernews when ever the server get started
       console.log("Scraping done");
     } catch (err) {
       console.log("Scraper failed:", err.message);
